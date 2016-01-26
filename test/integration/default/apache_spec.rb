@@ -17,6 +17,19 @@ describe directory('/data/websites') do
   its('mode') { should eq 0755 }
 end
 
+# Log Checks
+describe directory('/data/logs') do
+  it { should be_directory }
+  it { should be_owned_by 'apache' }
+  it { should be_grouped_into 'apache' }
+  its('mode') { should eq 0755 }
+end
+
 # describe apache_conf do
 #   its('ServerTokens') { should eq 'Prod' }
 # end
+
+# Check for modules
+describe command('httpd -M | grep proxy_http_module') do
+  its('stdout') { should eq " proxy_http_module (shared)\n" }
+end
