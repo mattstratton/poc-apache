@@ -1,4 +1,3 @@
-# securian-apache
+# poc-apache
 
 TODO: Enter the cookbook description here.
-
