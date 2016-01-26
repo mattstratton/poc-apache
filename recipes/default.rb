@@ -11,7 +11,15 @@ user node['securian-apache']['apache-user'] do
   system true
   shell '/bin/false'
 end
+
 directory node['securian-apache']['webroot'] do
+  owner node['securian-apache']['apache-user']
+  mode '0755'
+  group node['securian-apache']['apache-group']
+  recursive true
+end
+
+directory node['securian-apache']['logroot'] do
   owner node['securian-apache']['apache-user']
   mode '0755'
   group node['securian-apache']['apache-group']
