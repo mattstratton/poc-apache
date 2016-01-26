@@ -6,7 +6,7 @@ driver:
   security_group_ids: sg-e5bafc83
   subnet_id: subnet-977469ce
   availability_zone: us-east-1a
-  instance_type: t2.micro
+  instance_type: t1.micro
   tags:
     # Replace YOURNAME and YOURCOMPANY here
     Name: "Chef Training Node for Matt Stratton, Chef"
@@ -23,9 +23,9 @@ provisioner:
 platforms:
   - name: linux
     driver_config:
-      image_id: ami-61bbf104
+      image_id: ami-bf5021d6
     transport:
-      username: centos
+      username: root
       ssh_key: C:\Users\Administrator\.ssh\gramsay_bot.pem
 
 suites:

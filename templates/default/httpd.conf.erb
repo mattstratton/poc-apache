@@ -65,19 +65,19 @@ ProxyPreserveHost On
     Order Deny,Allow
     Deny from all
 </Directory>
-<Directory "#{node['securian-apache']['webroot']}">
+<Directory "<%= node['securian-apache']['webroot'] %>">
     Options FollowSymLinks
     AllowOverride None
     Order Allow,Deny
     Allow from all
 </Directory>
-<Directory "#{node['securian-apache']['webroot']}/*/logs">
+<Directory "<%= node['securian-apache']['webroot'] %>/*/logs">
     Options Indexes FollowSymLinks
     AllowOverride None
     Order Deny,Allow
     Deny from all
 </Directory>
-<Directory "/#{node['securian-apache']['webroot']}/indshared/static">
+<Directory "<%= node['securian-apache']['webroot'] %>/indshared/static">
     Options -Indexes
 </Directory>
 <IfModule mod_userdir.c>
@@ -224,10 +224,10 @@ ProxyRequests Off
 ProxyVia Off
 </IfModule>
 # Fill in here
-NameVirtualHost <%= node['IP'] %>
+NameVirtualHost <%= node['ipaddress'] %>
 # Fill in here
-<VirtualHost <%= node['IP'] %>>
+<VirtualHost <%= node['ipaddress'] %>>
     DocumentRoot <%= node['securian-apache']['webroot'] %>/default/production/root
     ServerName <%= node['fqdn'] %>
-    ServerAlias <%= node['IP'] %>
+    ServerAlias <%= node['ipaddress'] %>
 </VirtualHost>
