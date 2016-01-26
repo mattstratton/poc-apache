@@ -6,13 +6,18 @@
 
 package 'httpd'
 
-service 'httpd' do
-  action [:enable, :start]
+user node['securian-apache']['apache-user'] do
+  comment 'Apache'
+  system true
+  shell '/bin/false'
+end
+directory node['securian-apache']['webroot'] do
+  owner node['securian-apache']['apache-user']
+  mode '0755'
+  group node['securian-apache']['apache-group']
+  recursive true
 end
 
-directory '/data/websites' do
-  owner 'apache'
-  mode '0755'
-  group 'apache'
-  recursive true
+service 'httpd' do
+  action [:enable, :start]
 end
