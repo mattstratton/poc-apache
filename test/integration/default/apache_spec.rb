@@ -16,3 +16,7 @@ describe directory('/data/websites') do
   it { should be_grouped_into 'apache' }
   its('mode') { should eq 0755 }
 end
+
+# describe apache_conf do
+#   its('ServerTokens') { should eq 'Prod' }
+# end

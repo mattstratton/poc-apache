@@ -1,0 +1,233 @@
+ServerTokens Prod
+ServerRoot "/etc/httpd"
+PidFile run/httpd.pid
+Timeout 180
+KeepAlive On
+MaxKeepAliveRequests 200
+KeepAliveTimeout 15
+<IfModule prefork.c>
+    StartServers           8
+    MinSpareServers        5
+    MaxSpareServers       20
+    ServerLimit          256
+    MaxClients           256
+    MaxRequestsPerChild 4000
+</IfModule>
+<IfModule worker.c>
+    ServerLimit         80
+    ThreadLimit         50
+    StartServers         4
+    MaxClients        4000
+    MinSpareThreads    100
+    MaxSpareThreads    200
+    ThreadsPerChild     50
+    MaxRequestsPerChild  0
+</IfModule>
+# Fill in here
+Listen <%= node['ipaddress'] %>:80
+LoadModule auth_basic_module modules/mod_auth_basic.so
+LoadModule authn_file_module modules/mod_authn_file.so
+LoadModule authn_default_module modules/mod_authn_default.so
+LoadModule authz_host_module modules/mod_authz_host.so
+LoadModule authz_user_module modules/mod_authz_user.so
+LoadModule authz_groupfile_module modules/mod_authz_groupfile.so
+LoadModule authz_default_module modules/mod_authz_default.so
+LoadModule filter_module modules/mod_filter.so
+LoadModule log_config_module modules/mod_log_config.so
+LoadModule expires_module modules/mod_expires.so
+LoadModule headers_module modules/mod_headers.so
+LoadModule setenvif_module modules/mod_setenvif.so
+LoadModule mime_module modules/mod_mime.so
+LoadModule status_module modules/mod_status.so
+LoadModule autoindex_module modules/mod_autoindex.so
+LoadModule info_module modules/mod_info.so
+LoadModule negotiation_module modules/mod_negotiation.so
+LoadModule dir_module modules/mod_dir.so
+LoadModule speling_module modules/mod_speling.so
+LoadModule alias_module modules/mod_alias.so
+LoadModule rewrite_module modules/mod_rewrite.so
+LoadModule version_module modules/mod_version.so
+LoadModule proxy_module          "modules/mod_proxy.so"
+LoadModule proxy_balancer_module "modules/mod_proxy_balancer.so"
+LoadModule proxy_http_module     "modules/mod_proxy_http.so"
+LoadModule proxy_ajp_module      "modules/mod_proxy_ajp.so"
+Include conf.d/*.conf
+User <%= node['securian-apache']['apache-user'] %>
+Group <%= node['securian-apache']['apache-group'] %>
+ServerAdmin systemadminrequest@securian.com
+# Fill in here
+ServerName <%= node['fqdn'] %>
+UseCanonicalName Off
+ProxyPreserveHost On
+<Directory />
+    Options FollowSymLinks
+    AllowOverride None
+    Order Deny,Allow
+    Deny from all
+</Directory>
+<Directory "#{node['securian-apache']['webroot']}">
+    Options FollowSymLinks
+    AllowOverride None
+    Order Allow,Deny
+    Allow from all
+</Directory>
+<Directory "#{node['securian-apache']['webroot']}/*/logs">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Order Deny,Allow
+    Deny from all
+</Directory>
+<Directory "/#{node['securian-apache']['webroot']}/indshared/static">
+    Options -Indexes
+</Directory>
+<IfModule mod_userdir.c>
+                        UserDir disabled
+
+</IfModule>
+DirectoryIndex index.html
+AccessFileName .htaccess
+<Files ~ "^\.ht">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</Files>
+<Files ~ "\.bom$">
+    Deny from all
+</Files>
+<Files ~ "\.ahs.dig$">
+    Deny from all
+</Files>
+TraceEnable off
+LimitRequestFieldSize 24570
+TypesConfig /etc/mime.types
+DefaultType None
+<IfModule mod_mime_magic.c>
+    MIMEMagicFile conf/magic
+</IfModule>
+HostnameLookups Off
+EnableMMAP off
+EnableSendfile on
+ErrorLog /data/logs/websites/default/error.log
+LogLevel warn
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %b" common
+LogFormat "%{Referer}i -> %U" referer
+LogFormat "%{User-agent}i" agent
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" \"%{Cookie}i\" \"SSL=%{front-end-https}i\"" ML_Std_Log
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" \"SSL=%{front-end-https}i\"" ML_StdNoCookie_Log
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" \"SSL=%{front-end-https}i\" \"XFF=%{X-Forwarded-For}i\" " ML_XFF_Log
+<IfModule logio_module>
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+</IfModule>
+CustomLog <%= node['securian-apache']['logroot'] %>/websites/default/access.log ML_StdNoCookie_Log
+ServerSignature Off
+AddIconByEncoding (CMP,/icons/compressed.gif) x-compress x-gzip
+AddIconByType (TXT,/icons/text.gif) text/*
+AddIconByType (IMG,/icons/image2.gif) image/*
+AddIconByType (SND,/icons/sound2.gif) audio/*
+AddIconByType (VID,/icons/movie.gif) video/*
+AddIcon /icons/binary.gif .bin .exe
+AddIcon /icons/binhex.gif .hqx
+AddIcon /icons/tar.gif .tar
+AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
+AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
+AddIcon /icons/a.gif .ps .ai .eps
+AddIcon /icons/layout.gif .html .shtml .htm .pdf
+AddIcon /icons/text.gif .txt
+AddIcon /icons/c.gif .c
+AddIcon /icons/p.gif .pl .py
+AddIcon /icons/f.gif .for
+AddIcon /icons/dvi.gif .dvi
+AddIcon /icons/uuencoded.gif .uu
+AddIcon /icons/script.gif .conf .sh .shar .csh .ksh .tcl
+AddIcon /icons/tex.gif .tex
+AddIcon /icons/bomb.gif core
+AddIcon /icons/back.gif ..
+AddIcon /icons/hand.right.gif README
+AddIcon /icons/folder.gif ^^DIRECTORY^^
+AddIcon /icons/blank.gif ^^BLANKICON^^
+DefaultIcon /icons/unknown.gif
+IndexIgnore .??* *~ *
+AddLanguage ca .ca
+AddLanguage cs .cz .cs
+AddLanguage da .dk
+AddLanguage de .de
+AddLanguage el .el
+AddLanguage en .en
+AddLanguage eo .eo
+AddLanguage es .es
+AddLanguage et .et
+AddLanguage fr .fr
+AddLanguage he .he
+AddLanguage hr .hr
+AddLanguage it .it
+AddLanguage ja .ja
+AddLanguage ko .ko
+AddLanguage ltz .ltz
+AddLanguage nl .nl
+AddLanguage nn .nn
+AddLanguage no .no
+AddLanguage pl .po
+AddLanguage pt .pt
+AddLanguage pt-BR .pt-br
+AddLanguage ru .ru
+AddLanguage sv .sv
+AddLanguage zh-CN .zh-cn
+AddLanguage zh-TW .zh-tw
+LanguagePriority en ca cs da de el eo es et fr he hr it ja ko ltz nl nn no pl pt pt-BR ru sv zh-CN zh-TW
+ForceLanguagePriority Prefer Fallback
+AddDefaultCharset ISO-8859-1
+AddType application/x-compress .Z
+AddType application/x-gzip .gz .tgz
+AddType application/x-x509-ca-cert .crt
+AddType application/x-pkcs7-crl    .crl
+AddHandler type-map var
+AddType text/html .shtml
+AddOutputFilter INCLUDES .shtml
+BrowserMatch "Mozilla/2" nokeepalive
+BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
+BrowserMatch "RealPlayer 4\.0" force-response-1.0
+BrowserMatch "Java/1\.0" force-response-1.0
+BrowserMatch "JDK/1\.0" force-response-1.0
+BrowserMatch "Microsoft Data Access Internet Publishing Provider" redirect-carefully
+BrowserMatch "MS FrontPage" redirect-carefully
+BrowserMatch "^WebDrive" redirect-carefully
+BrowserMatch "^WebDAVFS/1.[0123]" redirect-carefully
+BrowserMatch "^gnome-vfs/1.0" redirect-carefully
+BrowserMatch "^XML Spy" redirect-carefully
+BrowserMatch "^Dreamweaver-WebDAV-SCM1" redirect-carefully
+<Location /server-status>
+    SetHandler server-status
+    Order deny,allow
+    Deny from all
+    Allow from 10.130.8.
+    Allow from 10.130.9.
+    Allow from 10.130.10.
+    Allow from 170.11.194.111
+    Allow from 170.11.194.44
+</Location>
+<Location /server-info>
+    SetHandler server-info
+    Order deny,allow
+    Deny from all
+    Allow from 10.140.94.
+    Allow from 10.130.8.
+    Allow from 10.130.9.
+    Allow from 10.130.10.
+</Location>
+<IfModule mod_proxy.c>
+ProxyRequests Off
+<Proxy *>
+    Order deny,allow
+        Allow from 0.0.0.0
+</Proxy>
+ProxyVia Off
+</IfModule>
+# Fill in here
+NameVirtualHost <%= node['IP'] %>
+# Fill in here
+<VirtualHost <%= node['IP'] %>>
+    DocumentRoot <%= node['securian-apache']['webroot'] %>/default/production/root
+    ServerName <%= node['fqdn'] %>
+    ServerAlias <%= node['IP'] %>
+</VirtualHost>

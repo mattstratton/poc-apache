@@ -26,6 +26,10 @@ directory node['securian-apache']['logroot'] do
   recursive true
 end
 
+template '/etc/httpd/conf/httpd.conf' do
+  source 'httpd.conf.erb'
+end
+
 service 'httpd' do
   action [:enable, :start]
 end
