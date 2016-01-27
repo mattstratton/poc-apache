@@ -1,0 +1,5 @@
+<VirtualHost <%= node['ipaddress'] %>:<%= @port %>>
+    DocumentRoot <%= node['securian-apache']['webroot'] %>/<%= @site %>
+    ServerName <%= node['fqdn'] %>
+    ServerAlias <%= node['ipaddress'] %>
+</VirtualHost>
