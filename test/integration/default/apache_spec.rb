@@ -25,9 +25,9 @@ describe directory('/data/logs') do
   its('mode') { should eq 0755 }
 end
 
-# describe apache_conf do
-#   its('ServerTokens') { should eq 'Prod' }
-# end
+describe apache_conf do
+  its('ServerTokens') { should eq 'Prod' }
+end
 
 # Check for modules
 describe command('httpd -M | grep proxy_http_module') do
